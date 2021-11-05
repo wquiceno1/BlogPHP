@@ -41,14 +41,12 @@
                 <div class="container">          
                     <h2 class="card-title">Agregar entradas</h2>
                     <div class="card w-75">
-                        <form action="" method="post" enctype="multipart/form-data">
-                        <input type="text"  placeholder="titulo" id="Titulo"><br><br>
-                        <input type="email" name="email" id="email" placeholder="Email"><br><br>
-                        <input type="file" name="imagen" id="imagen"><br><br>
-                        <textarea class="form-control" id="contenido" rows="3" placeholder="Contenido" ></textarea><br><br>
-                        <input type="submit" class="btn btn-success"  value="Guardar">
-
-
+                        <form action="insertar_contenido.php" method="post" enctype="multipart/form-data">
+                            <input type="text" name="titulo"><br><br>
+                            <input type="email" name="email" id="email" placeholder="Email"><br><br>
+                            <input type="file" name="imagen" id="imagen"><br><br>
+                            <textarea class="form-control" name="contenido" rows="3"></textarea><br><br>
+                            <input type="submit" class="btn btn-success"  value="Guardar">
                         </form>
                     </div>                 
                          
