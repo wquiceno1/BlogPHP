@@ -1,13 +1,6 @@
 <?php
 
-//conexion
-$conex=mysqli_connect("localhost", "root", "", "bd_blog");
-
-if(!$conex){
-    echo "La conexion fallo. ";
-    exit();
-
-}
+include("conexion.php");
 
 if($_FILES['imagen']['error']){
 
@@ -46,8 +39,7 @@ if($_FILES['imagen']['error']){
 date_default_timezone_set('America/Bogota');
 
 $titulo=$_POST['titulo'];
-$fecha = date("Y-m-d H:i:s");
-echo "fecha: ".$fecha;
+$fecha = date('Y-m-d H:i:s');
 $contenido=$_POST['contenido'];
 $email=$_POST['email'];
 $imagen=$_FILES['imagen']['name'];

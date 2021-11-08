@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <?php require_once("conexion.php");?>
     </head>
     <body>
         <!-- Responsive navbar-->
@@ -41,46 +42,100 @@
                 <div class="container">          
                     <h2 class="card-title">Agregar entradas</h2>
                     <div class="card w-75">
-                        <form action="insertar_contenido.php" method="post" enctype="multipart/form-data">
+                        <form action="index.php" method="post" enctype="multipart/form-data">
                             <input type="text" name="titulo"><br><br>
                             <input type="email" name="email" id="email" placeholder="Email"><br><br>
                             <input type="file" name="imagen" id="imagen"><br><br>
                             <textarea class="form-control" name="contenido" rows="3"></textarea><br><br>
-                            <input type="submit" class="btn btn-success"  value="Guardar">
+                            <input type="submit" class="btn btn-success" name="guardar" value="Guardar">
                         </form>
                     </div>                 
-                         
-                    <br>
-                    <div class="row">
-                        <div class="col-sm-6">                            
-                            <h2 class="card-title">Featured Post Title</h2>
-                            <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>                                
-                        </div>
-                        <div class="col-sm-6">
-                        <div class="card-body">
-                                <div class="small text-muted">January 1, 2021</div>
-                                
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-                                
+                    <?php
+                    if(isset($_REQUEST['guardar'])){
+                        
+
+                        if($_FILES['imagen']['error']){
+                        
+                            switch($_FILES['imagen']['error']){
+                        
+                                case 1:
+                                    echo "Archivo demasiado grande para el servidor.";
+                                    break;
+                                case 2:
+                                    echo "El tamaño de la imagen es demasiado grande.";
+                                    break;
+                                case 3:
+                                    echo "Fallo durante la carga de la imagen.";
+                                    break;
+                                case 4:
+                                    echo "No se envio ningun archivo";
+                                    break;
+                        
+                            }
+                        
+                        } else {
+                        
+                            //echo "Imagen cargada correctamente.<br>";
+                            if(isset($_FILES['imagen']['name']) && ($_FILES['imagen']['error'] == UPLOAD_ERR_OK)){
+                                $ruta='imagenes/';
+                                move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta.$_FILES['imagen']['name']);
+                                //echo "El archivo ".$_FILES['imagen']['name']." se copio en el directorio de imagenes<br>";
+                        
+                            } else {
+                                echo "No se pudo copiar la imagen en el directorio. ";
+                            }
+                        
+                        }
+                        
+                        //cargar las variables
+                        date_default_timezone_set('America/Bogota');
+                        
+                        $titulo=$_POST['titulo'];
+                        $fecha = date('Y-m-d H:i:s');
+                        $contenido=$_POST['contenido'];
+                        $email=$_POST['email'];
+                        $imagen=$_FILES['imagen']['name'];
+                        
+                        $query="INSERT INTO contenido (titulo, fecha, contenido, email, imagen) 
+                                VALUES ('".$titulo."', '".$fecha."', '".$contenido."', '".$email."', '".$imagen."')";
+                        $result=mysqli_query($conex, $query);
+                        
+                        
+                        
+                        echo "<br>Entrada agregada con exito. <br><br>";
+
+                       }
+                       // consultar los post
+
+                       $consulta="SELECT * FROM contenido ORDER BY fecha DESC";
+                    echo "<br><h1>Lista de post</h1><hr>";
+                       if($resultado=mysqli_query($conex,$consulta)){
+                           while($post=mysqli_fetch_assoc($resultado)){?>
+                           
+                            
+                            
+
+                            <div class="row">
+                                <div class="col-sm-6">                            
+                                    <h2 class="card-title"><?php echo $post['titulo'];?></h2>
+                                    <a href="#!"><img class="card-img-top" src="imagenes/<?php echo $post['imagen'];?>" alt="..." width="200px"/></a>                                
+                                </div>
+                                <br><br>
+                                <div class="col-sm-6">
+                                <div class="card-body">
+                                        <div class="small text-muted"><?php echo $post['fecha'];?></div>
+                                        
+                                        <p class="card-text"><?php echo $post['contenido'];?></p>
+                                        
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <br><br>
-                    <div class="row">
-                        <div class="col-sm-6">                            
-                            <h2 class="card-title">Featured Post Title</h2>
-                            <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>                                
-                        </div>
-                        <div class="col-sm-6">
-                        <div class="card-body">
-                                <div class="small text-muted">January 1, 2021</div>
-                                
-                                <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-                                
-                            </div>
-                        </div>
-                    </div>
-                    
+                            <br><hr><br>
+                    <?php
+                            }
+
+                        }mysqli_close($conex);?>
+
                 </div>                
             </div>
         </div>
