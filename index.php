@@ -50,7 +50,7 @@
                             <input type="submit" class="btn btn-success" name="guardar" value="Guardar">
                         </form>
                     </div>                 
-                    <?php
+                    <?php //cometarios de prueba
                     if(isset($_REQUEST['guardar'])){
                         
 
