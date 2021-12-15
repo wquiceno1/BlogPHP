@@ -1,5 +1,5 @@
 <?php
-
+//probando gitflow
 class objeto_blog{
 
     private $id;
